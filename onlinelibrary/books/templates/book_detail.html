@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Detail</title>
+</head>
+<body>
+    <p>Current User: {{ user }}</p>
+    {% if user.profile_photo %}
+        <div><img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" style="width: 50px; height: 50px; border-radius: 50%;"></div>
+    {% endif %}
+
+    <h1>Book Detail</h1>
+    <h2>{{ book.title }}</h2>
+
+    {% if book.reader == user %}
+        <p>You're currently reading this</p>
+    {% elif book.reader %}
+        <p>This book is unavailable for check out</p>
+    {% else %}
+        <p>Available to check out</p>
+    {% endif %}
+
+    <div>
+        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" style="height: 200px;">
+    </div>
+
+    <ul>
+        <li>Author: {{ book.author }}</li>
+        <li>ISBN: {{ book.isbn }}</li>
+        <li>Published Date: {{ book.published_date }}</li>
+        <li>Added Date: {{ book.added_date }}</li>
+        <li>Publisher: {{ book.publisher }}</li>
+        <li>Genre: {{ book.genre }}</li>
+    </ul>
+
+    {% if user.is_librarian %}
+        <a href="{% url 'books:book_edit' book.id %}">Edit Book</a>
+    {% endif %}
+
+    {% if user.is_reader %}
+        {% if book.reader == None %}
+            <a href="{% url 'books:book_checkout' book.id %}">Check out</a>
+        {% elif book.reader == user %}
+            <a href="{% url 'books:book_checkin' book.id %}">Return book</a>
+        {% endif %}
+    {% endif %}
+
+    <p>
+        <a href="{% url 'books:books_list' %}">Back to Book List</a>
+    </p>
+
+</body>
+</html>

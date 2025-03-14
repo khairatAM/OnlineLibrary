@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checked Out Books</title>
+</head>
+<body>
+    <p>Current User: {{ user }}</p>
+    {% if user.profile_photo %}
+        <div><img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" style="width: 50px; height: 50px; border-radius: 50%;"></div>
+    {% endif %}
+
+    <h1>Book: {{ book.title }}</h1>
+    <h2>Current Reader: {{ book.reader}} </h2>
+    <div><img src="{{ book.reader.profile_photo.url }}" alt="{{ book.reader.username }}" style="height: 100px;"></div>
+    <p>Reader email: {{ book.reader.email }} </p>
+    <p>Check Out Date: {{ book.date_checked_out }} </p>
+    <p>Expected Return Date: {{ book.expected_return_date }} </p>
+    <p>Days Left Till Return: {{ days_till_due }} days </p>
+</body>
+</html>
