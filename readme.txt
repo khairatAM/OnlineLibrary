@@ -6,10 +6,10 @@ This web system was developed using the following technologies:
 - SQLite (For the database)
 
 HOW TO RUN:
-1. Ensure Python 3 is install on your system. If it is not, install it by running the command:
-    `python3 -m pip install --user virtualenv`.
+1. Ensure Python 3 is install on your system. If it is not, follow the official documentation to install it, avaible here:
+    `https://www.python.org/downloads/`.
 
-2. Duplicate the repo to a chosen directory on your local device. 
+2. Clone the project repo via the URL https://github.com/khairatAM/OnlineLibrary.git file to a chosen directory on your local device. 
 
 3. Open a new terminal and cd to the directory containing the repo. Then, in the terminal, run the command 
     `source django-env/bin/activate`
@@ -19,7 +19,7 @@ HOW TO RUN:
     `cd onlinelibrary`.
 
 5. And, in the same terminal, where the virtual environment is active, run the following commands sequentially: 
-    `python manage.py makemigrations`
+    `python manage.py makemigrations`;
     `python manage.py migrate`
    to set up the SQLite database.
 
@@ -27,15 +27,21 @@ HOW TO RUN:
     `python manage.py runserver`.
 
 6. Access the project by pasting the following URL in your browser of choice (preferably Chrome):
-    `http://127.0.0.1:8000/books`.
+    `http://128.0.0.1:8000/books`.
 
-7. Emails
-7. a. Setting up Redis
-As the application uses a Redis server to queue the emails, ensure your Redis server is up and running, with the following link:
+7. Default Admin Credentials
+The application comes with a default admin user with the following log in details:
+- Username: admin001
+- Password: Password123
+However, you will need to create a reader (non-admin user) by registering.
+
+8. Emails
+8. a. Setting up Redis
+As the application uses a Redis server to queue emails, ensure your Redis server is up and running by following the official documentation, available at:
     `https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/`.
-The program uses the following URL for Redis: `redis://localhost:6379/0`. Ensure your port number matches.
+The program uses the following URL for Redis: `redis://localhost:6389/0`. Ensure your port number matches.
 
-7. b. Monitoring the Emails
+8. b. Monitoring the Emails
 To view the email activity, START ~TWO~ NEW TERMINALS. Repeat steps 3 & 4 above in EACH OF THE NEW TERMINALS. 
 Then in one terminal, run the command:
     `celery -A core beat --loglevel=info`
