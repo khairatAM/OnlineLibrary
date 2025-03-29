@@ -45,7 +45,7 @@ As the application uses a Redis server to queue emails, ensure your Redis server
 The program uses the following URL for Redis: `redis://localhost:6389/0`. Ensure your port number matches.
 
 8. b. Monitoring the Emails
-To view the email activity, START ~TWO~ NEW TERMINALS. Repeat steps 3.b., 3.c. & 4 ONLY in EACH OF THE NEW TERMINALS. 
+To view the email activity, START ~TWO~ NEW TERMINALS and cd to the project directory, then repeat steps 3.c. & 4 ONLY in EACH OF THE NEW TERMINALS. 
 Then in one terminal, run the command:
     `celery -A core beat --loglevel=info`
 And, in the other terminal, run the command:
