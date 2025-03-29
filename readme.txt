@@ -3,7 +3,8 @@ ONLINE LIBRARY MANAGEMENT SYSTEM (--KHAIRAT MONGUNO)
 TOOLS:
 This web system was developed using the following technologies:
 - Django (A Python MVT web development framework)
-- SQLite (For the database)
+- SQLite (As the primary database)
+- Redis (To queue tasks)
 
 HOW TO RUN:
 1. Ensure Python 3 is install on your system. If it is not, follow the official documentation to install it, avaible here:
