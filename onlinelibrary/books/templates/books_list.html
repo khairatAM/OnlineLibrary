@@ -9,6 +9,8 @@
     <p>Current User: {{ user }}</p>
     {% if user.profile_photo %}
         <div><img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" style="width: 75px; height: 75px; border-radius: 50%;"></div>
+    {% else %}
+        <div>No profile photo available.</div>
     {% endif %}
 
     
@@ -24,7 +26,7 @@
             <li>
                 <a href="{% url 'books:book_detail' book.id %}">{{ book.title }} - {{ book.author }}</a>
             </li>
-            <div><img src="{{ book.cover_image.url }}" alt="{{ book.title }}" style="height: 200px;"></div>
+            <div><img src="{{ book.cover_image.url }}" alt="{{ book.title }}" style="height: 200px; width: 140px;"></div>
         {% endfor %}
     </ul>
     {% else %}

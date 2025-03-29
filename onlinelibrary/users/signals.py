@@ -6,7 +6,9 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
+# SETTING UP DEFAULT ADMIN USER
+# This function will create a default admin user if it doesn't exist
+# after the database migration is completed. 
 @receiver(post_migrate)
 def create_default_admin(**kwargs):
     if not User.objects.filter(username='admin001').exists():

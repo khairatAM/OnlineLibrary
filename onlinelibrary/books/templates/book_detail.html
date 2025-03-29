@@ -9,6 +9,8 @@
     <p>Current User: {{ user }}</p>
     {% if user.profile_photo %}
         <div><img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" style="width: 50px; height: 50px; border-radius: 50%;"></div>
+    {% else %}
+        <div>No profile photo available.</div>
     {% endif %}
 
     <h1>Book Detail</h1>
@@ -23,7 +25,7 @@
     {% endif %}
 
     <div>
-        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" style="height: 200px;">
+        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" style="height: 200px; width: 140px;">
     </div>
 
     <ul>

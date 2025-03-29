@@ -32,24 +32,48 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/books'
 LOGOUT_REDIRECT_URL = '/login'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Setting up Celery for Email Sending
+CELERY_BROKER_URL = 'redis://localhost:6379/0' # Redis server URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'check-borrowed-books': {
+        'task': 'books.tasks.check_borrowed_books',
+        'schedule': crontab(minute='*', hour='*'),  # Run every minute
+    },
+    
+    'check-overdue-books': {
+        'task': 'books.tasks.check_overdue_books',
+        'schedule': crontab(minute='*', hour='*'),  # Run every minute
+    },
+}
+
+# Setting up Email Backend
+import os, environ
+from dotenv import load_dotenv 
+
+STATIC_URL = '/static/'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'test@mail.com'
-EMAIL_HOST_PASSWORD = 'test1234'
+EMAIL_USE_TLS = True
 
-# shcedhule ReaderEmailReminder
-CRONJOBS = [
-    ('*/1 * * * *', 'myapp.cron.RunTaskOnSpecificDateCronJob')  # Run every minute
-]
+# Getting sensitive variables from the .env file (which you should create with your own credentials)
+# load_dotenv()
+# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-import os
+# For now, we will use dummy credentials
+EMAIL_HOST_USER = 'onlinelibrary@test.com'
+EMAIL_HOST_PASSWORD = 'Password123'
+
+# Setting up the path to the media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Application definition
-
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'books.apps.BooksConfig',

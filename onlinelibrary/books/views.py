@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import BookForm
 from .models import Book
 from datetime import date, timedelta
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import HttpResponseForbidden
 
 @login_required
 def home(request):
@@ -10,8 +13,9 @@ def home(request):
 
 @login_required
 def create_book(request):
+    # Ensure that only librarians can access this view
     if request.user.is_librarian == False:
-        return redirect('books:books_list')        
+        return HttpResponseForbidden("You do not have permission to view this resource.")       
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
@@ -35,15 +39,16 @@ def book_detail(request, id):
 
 @login_required
 def book_edit(request, id):
+    # Ensure that only librarians can access this view
     if request.user.is_librarian == False:
-        return redirect('books:books_list')  
+        return HttpResponseForbidden("You do not have permission to view this resource.")         
 
     book = get_object_or_404(Book, pk=id)      
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES, instance=book)
         if form.is_valid():
-            book.save()
-            return redirect('books:books_list') 
+            form.save()
+            return redirect('books:book_detail', id=id) 
     else:
         form = BookForm(instance=book)
 
@@ -51,6 +56,10 @@ def book_edit(request, id):
 
 @login_required
 def book_checkout(request, id):
+    # Ensure that only readers can access this view
+    if request.user.is_reader == False:
+        return HttpResponseForbidden("You do not have permission to view this resource.")      
+
     book = get_object_or_404(Book, pk=id)
     if book.reader is not None:
         return redirect('books:books_list') 
@@ -63,6 +72,10 @@ def book_checkout(request, id):
 
 @login_required
 def book_checkin(request, id):
+    # Ensure that only readers can access this view
+    if request.user.is_reader == False:
+        return HttpResponseForbidden("You do not have permission to view this resource.") 
+    
     book = get_object_or_404(Book, pk=id)
     if book.reader is None:
         return redirect('books:book_detail', id=id) 
@@ -71,16 +84,15 @@ def book_checkin(request, id):
     book.date_checked_out = None
     book.expected_return_date = None
     book.save()
-
-    # Schedule an email reminder to the reader
-    # check_in_reminder_email(book.reader.email, book.title, book.expected_return_date)
     
     return redirect('books:book_detail', id=id) 
 
 @login_required
 def books_list_checked_out(request):
+    # Ensure that only librarians can access this view
     if request.user.is_librarian == False:
-        return redirect('books:books_list')
+        return HttpResponseForbidden("You do not have permission to view this resource.")       
+    
     books = Book.objects.filter(reader__isnull=False)
     return render(request, 'books_checked_out.html', {'books': books})
 
@@ -92,8 +104,9 @@ def books_search(request):
 
 @login_required
 def book_reader(request, id):
+    # Ensure that only librarians can access this view
     if request.user.is_librarian == False:
-        return redirect('books:book_detail', id=id) 
+        return HttpResponseForbidden("You do not have permission to view this resource.")       
 
     book = get_object_or_404(Book, pk=id)
     if book.reader is not None:
@@ -101,17 +114,3 @@ def book_reader(request, id):
         return render(request, 'book_reader.html', {'book': book, 'days_till_due': days_till_due})
 
     return redirect('books:book_detail', id=id)
-
-@login_required
-def check_in_reminder_email(email, title, expected_return_date):
-    subject = 'Return Book Reminder Email'
-    message = f'This is a reminder that you have to return the book with title { title } back by { expected_return_date }.'
-    recipient_email = email
-
-    # Example: Date when the email should be sent (e.g., 2 minutes from now)
-    send_date = timezone.now() + timedelta(minutes=2)
-
-    # Schedule the email with Celery
-    send_reader_email.apply_async(args=[subject, message, recipient_email, send_date], eta=send_date)
-
-    return render(request, 'your_template.html', {'send_date': send_date})

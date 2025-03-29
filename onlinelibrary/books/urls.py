@@ -13,5 +13,4 @@ urlpatterns = [
     path('<int:id>/checkout', views.book_checkout, name='book_checkout'),
     path('<int:id>/checkin', views.book_checkin, name='book_checkin'),
     path('<int:id>/reader', views.book_reader, name='book_reader'),
-    # path('<int:id>/email/reader', views.check_in_reminder_email, name='check_in_reminder_email'),
 ]
